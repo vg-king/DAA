@@ -1,1 +1,11 @@
-1 2 4 5 8 7 9 
+--- Best Case ---
+Sorted: [0, 1, 2, 3, 4]
+Time: 17000 ns
+
+--- Worst Case ---
+Sorted: [0, 1, 2, 3, 4]
+Time: 3199 ns
+
+--- Average Case ---
+Sorted: [13, 21, 31, 57, 80]
+Time: 1501 ns
