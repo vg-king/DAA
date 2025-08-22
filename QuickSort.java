@@ -1,78 +1,114 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.util.Arrays;
+import java.io.*;
+import java.util.Random;
 
 public class QuickSort {
-    public static int Partition(int arr[],int low,int high){
-        int temp;
-        int i = low+1;
-        int j = high;
-        int pivot = arr[low];
-        while (i <= high && arr[i] < pivot) {
+
+     void quick(int[] arr, int left, int right) {
+        if (left >= right) return;
+        int pivot_index = partition(arr, left, right);
+        quick(arr, left, pivot_index - 1);
+        quick(arr, pivot_index + 1, right);
+    }
+
+     int partition(int[] arr, int left, int right) {
+        int pivot = arr[right];
+        int i = left + 1; int j=right;
+        while(arr[i]<pivot){
             i++;
         }
-        while (j >= low && arr[j] > pivot) {
+        while(arr[j]>pivot){
             j--;
         }
-        if (i < j) {
-            temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
-        } else {
-            temp = arr[low];
-            arr[low] = arr[j];
-            arr[j] = temp;
+        if (i<j) {
+              int temp = arr[i];
+              arr[i] = arr[j];
+              arr[j] = temp;            
         }
-        return j;
+            int temp = arr[right];
+            arr[right] = arr[j];
+            arr[j] = temp;
+            return j;
         
     }
-    public static void QuickSortt(int arr[],int low,int high){
-        if (low<high) {
-            int q = Partition(arr, low, high);
-            QuickSortt(arr, low, q-1);
-            QuickSortt(arr, q+1, high);
 
-        }
+     void copy_array(int[] dest, int[] src, int n) {
+        for (int i = 0; i < n; i++) dest[i] = src[i];
     }
-    public static void main(String[] args) {
-        int[] arr = new int[10000];
-        int n = 0;
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("input.txt"));
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] nums = line.trim().split("\\s+");
-                for (String num : nums) {
-                    if (!num.isEmpty()) arr[n++] = Integer.parseInt(num);
+
+     void sort_ascending(int[] arr, int n) {
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (arr[j] > arr[j + 1]) {
+                    int t = arr[j];
+                    arr[j] = arr[j + 1];
+                    arr[j + 1] = t;
                 }
             }
-            br.close();
-        } catch (Exception e) {
-            System.out.println("Error reading file: " + e.getMessage());
-            return;
         }
-        int[] bestArr = Arrays.copyOf(arr, n);
-        long startBest = System.nanoTime();
-        QuickSortt(bestArr, 0, n - 1);
-        long endBest = System.nanoTime();
-        System.out.println("Best/Avg case time: " + (endBest - startBest) + " ns");
-        int[] worstArr = Arrays.copyOf(arr, n);
-        Arrays.sort(worstArr);
-        long startWorst = System.nanoTime();
-        QuickSortt(worstArr, 0, n - 1);
-        long endWorst = System.nanoTime();
-        System.out.println("Worst case time: " + (endWorst - startWorst) + " ns");
-        try {
-            BufferedWriter bw = new BufferedWriter(new FileWriter("output.txt"));
-            for (int i = 0; i < n; i++) {
-                bw.write(bestArr[i] + " ");
-            }
-            bw.close();
-            System.out.println("Sorted array written to output.txt");
-        } catch (Exception e) {
-            System.out.println("Error writing file: " + e.getMessage());
+    }
+
+     void reverse_array(int[] arr, int n) {
+        for (int i = 0; i < n / 2; i++) {
+            int t = arr[i];
+            arr[i] = arr[n - 1 - i];
+            arr[n - 1 - i] = t;
         }
+    }
+
+    static void writeInputFile(String filename, int[] arr) throws IOException {
+        BufferedWriter bw = new BufferedWriter(new FileWriter(filename));
+        bw.write(arr.length + "\n");
+        for (int value : arr)
+            bw.write(value + " ");
+        bw.close();
+    }
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader input = new BufferedReader(new InputStreamReader(System.in));
+        System.out.print("Enter no.of elements-> ");
+        int n = Integer.parseInt(input.readLine());
+
+        int[] original = new int[n];
+        int[] arr = new int[n];
+        Random rand = new Random();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter("input.txt"));
+        writer.write(n + "\n");
+        for (int i = 0; i < n; i++) {
+            original[i] = rand.nextInt(100);
+            writer.write(original[i] + " ");
+        }
+        writer.close();
+        System.out.println("I/p file 'input.txt' created");
+
+        QuickSort qs = new QuickSort();
+
+        qs.copy_array(arr, original, n);
+        long start = System.nanoTime();
+        qs.quick(arr, 0, n - 1);
+        long end = System.nanoTime();
+        double avgTime = (end - start) / 1e6;
+        System.out.printf("Avg case -> %.6f ms%n", avgTime);
+
+        qs.copy_array(arr, original, n);
+        qs.sort_ascending(arr, n);
+        start = System.nanoTime();
+        qs.quick(arr, 0, n - 1);
+        end = System.nanoTime();
+        double bestTime = (end - start) / 1e6;
+        System.out.printf("best case-> %.6f ms%n", bestTime);
+
+        qs.copy_array(arr, original, n);
+        qs.sort_ascending(arr, n);
+        qs.reverse_array(arr, n);
+        start = System.nanoTime();
+        qs.quick(arr, 0, n - 1);
+        end = System.nanoTime();
+        double worstTime = (end - start) / 1e6;
+        System.out.printf("worst case -> %.6f ms%n", worstTime);
+
+        System.out.println("Sorted o/p->");
+        for (int i = 0; i < n; i++) System.out.print(arr[i] + " ");
+        System.out.println();
     }
 }
