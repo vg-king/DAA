@@ -6,7 +6,7 @@ public class QuickSort {
      void quick(int[] arr, int left, int right) {
         if (left >= right) return;
         int pivot_index = partition(arr, left, right);
-        quick(arr, left, pivot_index - 1);
+        quick(arr, left, pivot_index - 1); 
         quick(arr, pivot_index + 1, right);
     }
 

@@ -1,9 +1,9 @@
 import java.io.*;
-import java.util.Random;
+import java.util.Random;  
 
 public class MergeSort {
 
-    static void merge(int[] arr, int left, int right) {
+    static void merge(int[] arr, int left, int right) { 
         if (left >= right) return;
 
         int mid = (left + right) / 2;
