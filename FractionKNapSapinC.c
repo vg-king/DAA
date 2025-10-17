@@ -80,7 +80,7 @@ int main(){
         items[i].weight = weights[i];
         items[i].value = values[i];
         items[i].index = i;
-        items[i].ratio = (double)values[i] / items[i].weight; // weight > 0 guaranteed
+        items[i].ratio = (double)values[i] / items[i].weight; 
     }
 
     clock_t start = clock();

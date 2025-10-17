@@ -21,12 +21,12 @@ public class FractionalKnapSack {
             if (it.weight <= remaining){
                 remaining -= it.weight;
                 totalValue += it.value;
-                taken.add("Item#"+it.index+" full w="+it.weight+" v="+it.value+" r="+String.format("%.2f",it.ratio));
+                taken.add("Items-"+it.index+" full w="+it.weight+" v="+it.value+" r="+String.format("%.2f",it.ratio));
             } else {
                 double frac = (double)remaining / it.weight;
                 double addVal = it.value * frac;
                 totalValue += addVal;
-                taken.add("Item#"+it.index+" fraction="+String.format("%.2f",frac)+" w_used="+remaining+" of " + it.weight + " addValue="+String.format("%.2f",addVal));
+                taken.add("Item-"+it.index+" fraction="+String.format("%.2f",frac)+" w_used="+remaining+" of " + it.weight + " addValue="+String.format("%.2f",addVal));
                 remaining = 0;
             }
         }
