@@ -1,91 +1,117 @@
-import java.io.*;
-import java.util.*;
+
+
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Random;
+import java.util.Scanner;
 
 public class HeapSort {
-
-    static void heapify(int arr[], int n, int i) {
-        int largest = i;
-        int left = 2 * i + 1;
-        int right = 2 * i + 2;
-
-        if (left < n && arr[left] > arr[largest]) largest = left;
-        if (right < n && arr[right] > arr[largest]) largest = right;
-
-        if (largest != i) {
-            int temp = arr[i];
-            arr[i] = arr[largest];
-            arr[largest] = temp;
-            heapify(arr, n, largest);
-        }
-    }
-
-    static void sort(int arr[]) {
+    public void heapSort(int arr[]) {
         int n = arr.length;
-        for (int i = n / 2 - 1; i >= 0; i--) heapify(arr, n, i);
+        buildMaxHeap(arr, n);
         for (int i = n - 1; i > 0; i--) {
-            int temp = arr[0];
-            arr[0] = arr[i];
-            arr[i] = temp;
+            swap(arr, 0, i); // root max moved to end
             heapify(arr, i, 0);
         }
     }
-
-    public static void main(String[] args) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader("input.txt"));
-            String line = br.readLine();
-            br.close();
-
-            if (line == null || line.isEmpty()) {
-                System.out.println("Input file is empty!");
-                return;
-            }
-
-            String[] parts = line.trim().split("\\s+");
-            int[] arr = new int[parts.length];
-            for (int i = 0; i < parts.length; i++) {
-                arr[i] = Integer.parseInt(parts[i]);
-            }
-
-            System.out.println("Original Array: " + Arrays.toString(arr));
-
-
-            int[] arrBest = Arrays.copyOf(arr, arr.length);     
-            Arrays.sort(arrBest);
-
-            int[] arrWorst = Arrays.copyOf(arr, arr.length);    
-            Arrays.sort(arrWorst);
-            for (int i = 0; i < arrWorst.length / 2; i++) {
-                int temp = arrWorst[i];
-                arrWorst[i] = arrWorst[arrWorst.length - 1 - i];
-                arrWorst[arrWorst.length - 1 - i] = temp;
-            }
-
-            int[] arrAvg = Arrays.copyOf(arr, arr.length);      
-
-            long start, end;
-
-
-            start = System.nanoTime();
-            sort(arrBest);
-            end = System.nanoTime();
-            System.out.println("Best Case Time   : " + (end - start) + " ns");
-
-            start = System.nanoTime();
-            sort(arrAvg);
-            end = System.nanoTime();
-            System.out.println("Average Case Time: " + (end - start) + " ns");
-
-            start = System.nanoTime();
-            sort(arrWorst);
-            end = System.nanoTime();
-            System.out.println("Worst Case Time  : " + (end - start) + " ns");
-
-            System.out.println("\nFinal Sorted Array (from input): " + Arrays.toString(arrAvg));
-            sort(arr);
-
-        } catch (IOException e) {
-            System.out.println("Error reading file: " + e.getMessage());
+    private void buildMaxHeap(int arr[], int n) {
+        for (int i = n / 2 - 1; i >= 0; i--) {
+            heapify(arr, n, i);
         }
+    }
+    private void heapify(int arr[], int n, int i) {
+        int largest = i;
+        int left = 2 * i + 1; // left child
+        int right = 2 * i + 2; // right child
+        if (left < n && arr[left] > arr[largest]) {
+            largest = left;
+        }
+        if (right < n && arr[right] > arr[largest]) {
+            largest = right;
+        }
+        if (largest != i) {
+            swap(arr, i, largest);
+            heapify(arr, n, largest);
+        }
+    }
+    private void swap(int arr[], int i, int j) {
+        int temp = arr[i];
+        arr[i] = arr[j];
+        arr[j] = temp;
+    }
+    public static void reverseArray(int[] arr, int n) {
+        for (int i = 0; i < n / 2; i++) {
+            int temp = arr[i];
+            arr[i] = arr[n - i - 1];
+            arr[n - i - 1] = temp;
+        }
+    }
+    public void printArray(int arr[]) {
+        for (int num : arr) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+    public static void main(String[] args) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter the size of the array: ");
+        int n = sc.nextInt();
+        int[] arr = new int[n];
+        Random rand = new Random();
+        HeapSort hs = new HeapSort();
+        // Writing random numbers into file1.txt
+        FileWriter fw = new FileWriter("file1.txt");
+        for (int i = 0; i < n; i++) {
+            int val = rand.nextInt(100); // values from 0 to 99
+            fw.write(val + " ");
+        }
+        fw.close();
+
+        // Reading values from file1.txt into array
+        Scanner fileReader = new Scanner(new File("file1.txt"));
+        for (int i = 0; i < n && fileReader.hasNextInt(); i++) {
+            arr[i] = fileReader.nextInt();
+        }
+        fileReader.close();
+        System.out.print("Original Array from file1: ");
+        for (int val : arr) System.out.print(val + " ");
+        System.out.println();
+
+        // AVERAGE CASE
+        long start = System.nanoTime();
+        hs.heapSort(arr);
+        long end = System.nanoTime();
+        System.out.print("Sorted Array (Average Case): ");
+        for (int val : arr) System.out.print(val + " ");
+        double averageTime = (end - start) / 1e9;
+        System.out.printf("\nAverage case time: %f sec\n", averageTime);
+
+        // Save sorted array to file2.txt
+        FileWriter sortedWriter = new FileWriter("file2.txt");
+        for (int val : arr) {
+            sortedWriter.write(val + " ");
+        }
+        sortedWriter.close();
+        // BEST CASE
+        start = System.nanoTime();
+        hs.heapSort(arr);
+        end = System.nanoTime();
+        System.out.print("\nSorted Array (Best Case): ");
+        for (int val : arr) System.out.print(val + " ");
+        double bestTime = (end - start) / 1e9;
+        System.out.printf("\nBest case time: %f sec\n", bestTime);
+
+        // WORST CASE
+        reverseArray(arr, n);
+        start = System.nanoTime();
+        hs.heapSort(arr);
+        end = System.nanoTime();
+        System.out.print("\nSorted Array (Worst Case): ");
+        for (int val : arr) System.out.print(val + " ");
+        double worstTime = (end - start) / 1e9;
+        System.out.printf("\nWorst case time: %f sec\n", worstTime);
+        System.out.printf("\nAverage case time: %f sec\n", averageTime);
+        System.out.printf("\nBest case time: %f sec\n", bestTime);
     }
 }
