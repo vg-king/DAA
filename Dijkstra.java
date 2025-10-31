@@ -58,7 +58,7 @@ public class Dijkstra {
             int v = sc.nextInt();
             int w = sc.nextInt();
             adj.get(u).add(new Pair(w, v));
-            adj.get(v).add(new Pair(w, u)); // Undirected graph
+            adj.get(v).add(new Pair(w, u)); 
         }
 
         System.out.println("Enter the source vertex->");

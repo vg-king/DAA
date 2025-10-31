@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class FloydWarshallAlgo {
 
     public void shortest_distance(int matrix[][]) {
@@ -29,12 +31,18 @@ public class FloydWarshallAlgo {
     }
 
     public static void main(String[] args) {
-        int matrix[][] = {
-            {0, 3, -1, 7},
-            {-1, 0, 2, -1},
-            {-1, -1, 0, 1},
-            {-1, -1, -1, 0}
-        };
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter the rows and cols of matrix: ");
+        int rows = sc.nextInt();
+        int col = sc.nextInt();
+        int matrix[][] = new int[rows][col];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < col; j++) {
+                System.out.println("Enter the values of "+i +","+j);
+                int val = sc.nextInt();
+                matrix[i][j] = val;
+            }
+        }
 
         FloydWarshallAlgo obj = new FloydWarshallAlgo();
         obj.shortest_distance(matrix);
